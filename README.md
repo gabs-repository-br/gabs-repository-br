@@ -35,11 +35,107 @@
 ### Studying in this moment:
 ![JavaScript](https://img.shields.io/badge/-JavaScript-0D1117?style=for-the-badge&logo=javascript&labelColor=0D1117&textColor=0D1117)&nbsp;
 
+<div>
+    <script src="script.js"></script>
+</body>
+</html>
+style.css
+body {
+    background: #111;
+    color: white;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
 
-  <div align="center">
-<br><p align="centre"><b>Visitors Count</b></p>  
-<p align="center"><img align="center" src="https://profile-counter.glitch.me/{gabs-repository-br}/count.svg" /></p> 
-<br></div>
+canvas {
+    background: #222;
+    border: 3px solid #4CAF50;
+    margin-top: 20px;
+}
+script.js
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const box = 20;
+const canvasSize = 400;
+
+let snake = [
+    { x: 200, y: 200 }
+];
+
+let direction = "RIGHT";
+
+let food = {
+    x: Math.floor(Math.random() * 20) * box,
+    y: Math.floor(Math.random() * 20) * box
+};
+
+document.addEventListener("keydown", changeDirection);
+
+function changeDirection(event) {
+    if (event.key === "ArrowUp" && direction !== "DOWN")
+        direction = "UP";
+
+    if (event.key === "ArrowDown" && direction !== "UP")
+        direction = "DOWN";
+
+    if (event.key === "ArrowLeft" && direction !== "RIGHT")
+        direction = "LEFT";
+
+    if (event.key === "ArrowRight" && direction !== "LEFT")
+        direction = "RIGHT";
+}
+
+function draw() {
+    ctx.fillStyle = "#222";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Cobra
+    snake.forEach((segment, index) => {
+        ctx.fillStyle = index === 0 ? "#4CAF50" : "#8BC34A";
+        ctx.fillRect(segment.x, segment.y, box, box);
+    });
+
+    // Comida
+    ctx.fillStyle = "red";
+    ctx.fillRect(food.x, food.y, box, box);
+
+    let headX = snake[0].x;
+    let headY = snake[0].y;
+
+    if (direction === "UP") headY -= box;
+    if (direction === "DOWN") headY += box;
+    if (direction === "LEFT") headX -= box;
+    if (direction === "RIGHT") headX += box;
+
+    // Comer comida
+    if (headX === food.x && headY === food.y) {
+        food = {
+            x: Math.floor(Math.random() * 20) * box,
+            y: Math.floor(Math.random() * 20) * box
+        };
+    } else {
+        snake.pop();
+    }
+
+    const newHead = { x: headX, y: headY };
+
+    // Colisão
+    if (
+        headX < 0 ||
+        headY < 0 ||
+        headX >= canvasSize ||
+        headY >= canvasSize ||
+        snake.some(segment => segment.x === headX && segment.y === headY)
+    ) {
+        clearInterval(game);
+        alert("Game Over!");
+    }
+
+    snake.unshift(newHead);
+}
+
+const game = setInterval(draw, 100);
   
-
+</div>
 <img width=100% src="https://capsule-render.vercel.app/api?type=waving&color=00bfbf&height=120&section=footer"/>****
